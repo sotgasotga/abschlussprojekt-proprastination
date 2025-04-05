@@ -1,0 +1,33 @@
+version: 39
+jobs:
+- name: Push to Github
+  steps:
+  - !PushRepository
+    name: Push
+    remoteUrl: https://github.com/sotgasotga/@project_name@.git
+    userName: sotgasotga
+    passwordSecret: github-sync-token
+    force: false
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  triggers:
+  - !BranchUpdateTrigger
+    branches: main
+  retryCondition: never
+  maxRetries: 3
+  retryDelay: 30
+  timeout: 3600
+- name: Pull from Github
+  steps:
+  - !PullRepository
+    name: Pull
+    remoteUrl: https://github.com/sotgasotga/@project_name@.git
+    userName: sotgasotga
+    passwordSecret: github-sync-token
+    refs: refs/heads/* refs/tags/*
+    withLfs: true
+    force: true
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  retryCondition: never
+  maxRetries: 3
+  retryDelay: 30
+  timeout: 3600
